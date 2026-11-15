@@ -1,0 +1,60 @@
+{% extends "public_base.html" %}
+{% block title %}探索校園資訊{% endblock %}
+{% block content %}
+<section class="explore-hero">
+  <div class="eyebrow"><span class="eyebrow-line"></span> FIND YOUR WAY</div>
+  <h1>探索校園資訊</h1>
+  <p>搜尋公告、活動與校園生活服務，讓需要的資訊更容易找到。</p>
+  <form class="search-box explore-search" action="{{ url_for('explore') }}" method="get" role="search">
+    <span class="search-icon" aria-hidden="true">⌕</span>
+    <label class="visually-hidden" for="q">搜尋校園資訊</label>
+    <input id="q" name="q" type="search" placeholder="搜尋標題、摘要或詳細內容⋯⋯" value="{{ query }}">
+    {% if category_slug %}<input type="hidden" name="category" value="{{ category_slug }}">{% endif %}
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <button type="submit">搜尋 <span aria-hidden="true">→</span></button>
+  </form>
+</section>
+
+<section class="explore-content">
+  <div class="explore-toolbar">
+    <div class="filter-heading"><span class="eyebrow"><span class="eyebrow-line"></span> BROWSE BY CATEGORY</span><h2>資訊分類</h2></div>
+    <div class="category-pills">
+      <a class="category-pill {{ 'selected' if not category_slug }}" href="{{ url_for('explore', q=query, sort=sort) }}">全部</a>
+      {% for category in categories %}
+      <a class="category-pill {{ 'selected' if category_slug == category.slug }}" href="{{ url_for('explore', q=query, category=category.slug, sort=sort) }}">{{ category.icon }} {{ category.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="results-heading">
+    <div><div class="eyebrow"><span class="eyebrow-line"></span> CAMPUS DISCOVERIES</div>
+      <h2>{% if selected_category %}{{ selected_category.name }}{% else %}搜尋結果{% endif %}{% if query %}<span class="result-query">「{{ query }}」</span>{% endif %}</h2>
+      <p>共找到 {{ items|length }} 筆公開資訊</p>
+      {% if (query or category_slug) and items %}
+      <a class="clear-filter active-filter-reset" href="{{ url_for('explore') }}">清除所有篩選 <span aria-hidden="true">↺</span></a>
+      {% endif %}
+    </div>
+    <form class="sort-form" action="{{ url_for('explore') }}" method="get">
+      {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+      {% if category_slug %}<input type="hidden" name="category" value="{{ category_slug }}">{% endif %}
+      <label for="sort">排序</label>
+      <select id="sort" name="sort" onchange="this.form.submit()">
+        <option value="recent" {{ 'selected' if sort == 'recent' }}>最新建立</option>
+        <option value="important" {{ 'selected' if sort == 'important' }}>重要日期優先</option>
+      </select>
+      <noscript><button type="submit">套用</button></noscript>
+    </form>
+  </div>
+
+  {% if items %}
+  <div class="item-grid results-grid">
+    {% for item in items %}
+      {% set loop_index = loop.index %}
+      {% include "_item_card.html" %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-results"><span class="empty-icon">⌕</span><h3>目前找不到符合的資訊</h3><p>試試其他關鍵字，或清除分類篩選看看。</p><a class="clear-filter" href="{{ url_for('explore') }}">清除所有篩選 <span>→</span></a></div>
+  {% endif %}
+</section>
+{% endblock %}

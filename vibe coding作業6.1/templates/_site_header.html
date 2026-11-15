@@ -1,0 +1,22 @@
+<header class="site-header">
+  <nav class="nav-shell" aria-label="主導覽">
+    <a class="brand" href="{{ url_for('home') }}" aria-label="CampusMate 首頁">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      <span class="brand-name">Campus<span>Mate</span><small>校園生活資訊小幫手</small></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="開啟導覽選單" aria-expanded="false" aria-controls="primary-navigation">☰</button>
+    <div class="nav-links" id="primary-navigation">
+      <a class="nav-link" href="{{ url_for('home') }}">首頁</a>
+      <a class="nav-link" href="{{ url_for('explore') }}">探索資訊</a>
+      <a class="nav-link" href="{{ url_for('favorites') }}">我的收藏</a>
+      <a class="nav-link" href="{{ url_for('my_items') }}">我的資訊</a>
+      {% if current_user %}
+      <a class="nav-link member-link" href="{{ url_for('profile') }}"><span class="user-icon">♙</span> {{ current_user['display_name'] }}</a>
+      <form class="logout-form" method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="login-button logout-button" type="submit">登出</button></form>
+      {% else %}
+      <a class="login-button" href="{{ url_for('login') }}"><span class="user-icon">♙</span> 登入</a>
+      <a class="nav-link signup-link" href="{{ url_for('register') }}">註冊</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>

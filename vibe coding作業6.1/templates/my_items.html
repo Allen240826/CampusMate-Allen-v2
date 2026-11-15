@@ -1,0 +1,42 @@
+{% extends "public_base.html" %}
+{% block title %}我的資訊{% endblock %}
+{% block content %}
+<section class="explore-hero my-items-hero">
+  <div class="eyebrow"><span class="eyebrow-line"></span> YOUR PRIVATE CAMPUS NOTES</div>
+  <h1>我的資訊</h1>
+  <p>整理只屬於你的校園生活資訊，內容僅你本人可以查看與管理。</p>
+</section>
+<section class="explore-content my-items-content">
+  <div class="results-heading my-items-heading">
+    <div><div class="eyebrow"><span class="eyebrow-line"></span> PERSONAL COLLECTION</div><h2>私人資訊清單</h2><p>共整理 {{ items|length }} 筆資訊</p></div>
+    <a class="clear-filter create-item-link" href="{{ url_for('new_item') }}"><span class="create-plus">＋</span> 新增資訊</a>
+  </div>
+  {% if items %}
+  <div class="item-grid results-grid">
+    {% for item in items %}
+    <article class="item-card personal-item-card">
+      <a class="item-open-link" href="{{ url_for('item_detail', item_id=item['id'], next=url_for('my_items')) }}">
+        <div class="item-illustration {{ {'scholarship':'mint','courses':'blue','events':'peach','announcements':'blue','life-services':'mint'}.get(item['category_slug'], 'mint') }}">
+          <span class="item-symbol">{{ {'scholarship':'✦','courses':'⌁','events':'◉','announcements':'▤','life-services':'⌂'}.get(item['category_slug'], '✦') }}</span>
+          <span class="item-watermark">{{ loop.index }}</span><span class="item-category">{{ item['category'] }}</span>
+        </div>
+        <div class="item-body">
+          <div class="item-meta"><span>私人資訊</span><span>{{ item['important_date'] or '未設定重要日期' }}</span></div>
+          <h3>{{ item['title'] }}</h3><p>{{ item['summary'] }}</p>
+        </div>
+      </a>
+      <div class="personal-item-footer">
+        <span class="sample-chip">僅自己可見</span>
+        <div class="personal-actions">
+          <a class="manage-button edit-manage-button" href="{{ url_for('edit_item', item_id=item['id']) }}">編輯</a>
+          <a class="manage-button delete-manage-button" href="{{ url_for('delete_item', item_id=item['id']) }}">刪除</a>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-results"><span class="empty-icon">＋</span><h3>你還沒有新增自己的資訊</h3><p>將實用的校園資訊整理在這裡，只有你可以查看。</p><a class="clear-filter" href="{{ url_for('new_item') }}">新增第一筆資訊 <span>→</span></a></div>
+  {% endif %}
+</section>
+{% endblock %}

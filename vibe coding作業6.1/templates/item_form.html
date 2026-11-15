@@ -1,0 +1,42 @@
+{% extends "public_base.html" %}
+{% block title %}{{ '新增資訊' if mode == 'new' else '編輯資訊' }}{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('my_items') }}">← 返回我的資訊</a>
+  <div class="form-card">
+    <div class="eyebrow"><span class="eyebrow-line"></span> PRIVATE CAMPUS INFO</div>
+    <h1>{{ '新增私人資訊' if mode == 'new' else '編輯私人資訊' }}</h1>
+    <p class="form-intro">這筆內容預設為私人資訊，只有你本人可以查看。</p>
+    <form method="post" class="item-editor-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if mode == 'new' %}<input type="hidden" name="submission_key" value="{{ submission_key }}">{% endif %}
+      <label for="title">標題 <span>必填・最多 150 字元</span></label>
+      <input id="title" name="title" type="text" maxlength="150" required value="{{ item['title'] }}" placeholder="為這筆資訊取個清楚的標題" aria-describedby="title-count">
+      <span id="title-count" class="field-count" data-count-for="title">{{ item['title']|length }} / 150 字元</span>
+
+      <label for="category_id">資訊分類 <span>必填</span></label>
+      <select id="category_id" name="category_id" required>
+        <option value="">請選擇分類</option>
+        {% for category in categories %}
+        <option value="{{ category['id'] }}" {{ 'selected' if item['category_id']|string == category['id']|string }}>{{ category['name'] }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="summary">摘要 <span>必填・最多 500 字</span></label>
+      <textarea id="summary" name="summary" rows="3" maxlength="500" required placeholder="簡單說明這筆資訊的重點" aria-describedby="summary-count">{{ item['summary'] }}</textarea>
+      <span id="summary-count" class="field-count" data-count-for="summary">{{ item['summary']|length }} / 500 字元</span>
+
+      <label for="content">詳細內容 <span>必填・最多 20,000 字</span></label>
+      <textarea id="content" name="content" rows="8" maxlength="20000" required placeholder="補充完整內容、申請方式或備註" aria-describedby="content-count">{{ item['content'] }}</textarea>
+      <span id="content-count" class="field-count" data-count-for="content">{{ item['content']|length }} / 20,000 字元</span>
+
+      <div class="form-two-columns">
+        <div><label for="source_url">原始來源網址 <span>選填</span></label><input id="source_url" name="source_url" type="url" maxlength="2048" value="{{ item['source_url'] or '' }}" placeholder="https://"></div>
+        <div><label for="important_date">重要日期 <span>選填</span></label><input id="important_date" name="important_date" type="date" value="{{ item['important_date'] or '' }}"></div>
+      </div>
+      <div class="form-privacy-note"><span>♙</span><p><b>私人資訊</b><br>儲存後只有你本人可以查看、編輯或刪除。</p></div>
+      <div class="form-actions"><a class="form-cancel" href="{{ url_for('my_items') }}">取消</a><button class="auth-submit item-save-button" type="submit" data-submit-once data-idle-label="{{ '儲存資訊' if mode == 'new' else '儲存變更' }}" data-saving-label="儲存中…"><span data-submit-label>{{ '儲存資訊' if mode == 'new' else '儲存變更' }}</span> <span aria-hidden="true">→</span></button><span class="visually-hidden" role="status" aria-live="polite" data-submit-status></span></div>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "auth_base.html" %}
+{% block title %}會員登入{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow"><span class="eyebrow-line"></span> WELCOME BACK</div>
+  <h1>登入 CampusMate</h1>
+  <p class="auth-intro">登入後前往你的個人中心。</p>
+  <form method="post" action="{{ url_for('login') }}" class="auth-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="next" value="{{ next_url }}">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" maxlength="254" autocomplete="email" required value="{{ email }}">
+    <label for="password">密碼</label>
+    <input id="password" name="password" type="password" maxlength="128" autocomplete="current-password" required>
+    <button class="auth-submit" type="submit">登入 <span>→</span></button>
+  </form>
+  <p class="auth-switch">還沒有帳號？ <a href="{{ url_for('register') }}">立即註冊</a></p>
+</section>
+{% endblock %}

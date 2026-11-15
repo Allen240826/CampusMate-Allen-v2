@@ -1,0 +1,53 @@
+{% extends "public_base.html" %}
+{% block title %}{{ item['title'] }}{% endblock %}
+{% block content %}
+<article class="detail-page">
+  <a class="back-link" href="{{ back_url if (back_url.startswith('/explore') or back_url.startswith('/favorites') or back_url.startswith('/my-items')) and not back_url.startswith('//') else url_for('explore') }}">← 返回上一頁</a>
+  <div class="detail-card">
+    <div class="detail-banner {{ {'scholarship':'mint','courses':'blue','events':'peach','announcements':'blue','life-services':'mint'}.get(item['category_slug'], 'mint') }}">
+      <span class="detail-symbol">{{ {'scholarship':'✦','courses':'⌁','events':'◉','announcements':'▤','life-services':'⌂'}.get(item['category_slug'], '✦') }}</span>
+      <span class="detail-category">{{ item['category'] }}</span>
+      {% if item['is_demo'] %}<span class="detail-demo">示範資料</span>{% endif %}
+    </div>
+    <div class="detail-body">
+      <div class="eyebrow"><span class="eyebrow-line"></span> CAMPUS INFORMATION</div>
+      <h1>{{ item['title'] }}</h1>
+      <p class="detail-summary">{{ item['summary'] }}</p>
+      <div class="detail-content">{{ item['content'] }}</div>
+      <dl class="detail-meta">
+        <div>
+          <dt>重要日期</dt>
+          <dd>
+            {% if item['important_date_display'] %}
+              {{ item['important_date_display'] }}
+              {% if item['date_status'] == 'past' %}<span class="deadline-warning">重要日期已過</span>{% endif %}
+            {% else %}未設定重要日期{% endif %}
+          </dd>
+        </div>
+        {% if item['is_public'] %}
+        <div><dt>資訊狀態</dt><dd><span class="item-current-status {{ 'status-inactive' if item['is_current'] == 0 else 'status-unverified' if item['is_current'] is none else 'status-current' }}">{{ item['current_label'] }}</span></dd></div>
+        <div><dt>最後確認</dt><dd>{{ item['last_verified_at'] or '尚未確認' }}</dd></div>
+        {% endif %}
+        <div><dt>建立時間</dt><dd>{{ item['created_at'] }}</dd></div>
+        <div><dt>更新時間</dt><dd>{{ item['updated_at'] }}</dd></div>
+      </dl>
+      {% if safe_source_url %}
+      <a class="source-link" href="{{ safe_source_url }}" target="_blank" rel="noopener noreferrer">{{ '前往台大官方來源' if item['source_is_official'] else '前往原始資訊來源' }} <span>↗</span></a>
+      {% elif item['source_url'] %}<p class="source-unavailable">來源連結目前無法使用。</p>{% else %}<p class="source-unavailable">尚未提供原始資訊來源。</p>{% endif %}
+      {% if item['is_public'] %}
+      <form class="detail-favorite-form" method="post" action="{{ url_for('remove_favorite' if item['is_favorited'] else 'add_favorite', item_id=item['id']) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="next" value="{{ request.full_path.rstrip('?') }}">
+        <button class="favorite-button {{ 'is-favorited' if item['is_favorited'] }}" type="submit" aria-pressed="{{ 'true' if item['is_favorited'] else 'false' }}">{{ '♥ 已收藏' if item['is_favorited'] else '♡ 加入收藏' }}</button>
+      </form>
+      {% endif %}
+      {% if not item['is_public'] %}
+      <div class="private-item-actions">
+        <a class="manage-button edit-manage-button" href="{{ url_for('edit_item', item_id=item['id']) }}">編輯這筆資訊</a>
+        <a class="manage-button delete-manage-button" href="{{ url_for('delete_item', item_id=item['id']) }}">刪除</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endblock %}

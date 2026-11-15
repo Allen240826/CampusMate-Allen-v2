@@ -1,0 +1,22 @@
+{% extends "auth_base.html" %}
+{% block title %}建立帳號{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow"><span class="eyebrow-line"></span> JOIN THE CAMPUS</div>
+  <h1>建立你的帳號</h1>
+  <p class="auth-intro">加入 CampusMate，把校園生活資訊整理在一起。</p>
+  <form method="post" action="{{ url_for('register') }}" class="auth-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="display_name">顯示名稱</label>
+    <input id="display_name" name="display_name" type="text" maxlength="50" autocomplete="name" required value="{{ display_name }}">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" maxlength="254" autocomplete="email" required value="{{ email }}">
+    <label for="password">密碼 <span>至少 10 個字元</span></label>
+    <input id="password" name="password" type="password" minlength="10" maxlength="128" autocomplete="new-password" required>
+    <label for="password_confirm">確認密碼</label>
+    <input id="password_confirm" name="password_confirm" type="password" minlength="10" maxlength="128" autocomplete="new-password" required>
+    <button class="auth-submit" type="submit">建立帳號 <span>→</span></button>
+  </form>
+  <p class="auth-switch">已經有帳號？ <a href="{{ url_for('login') }}">登入</a></p>
+</section>
+{% endblock %}

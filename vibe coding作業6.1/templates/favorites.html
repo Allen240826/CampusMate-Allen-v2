@@ -1,0 +1,25 @@
+{% extends "public_base.html" %}
+{% block title %}我的收藏{% endblock %}
+{% block content %}
+<section class="explore-hero favorites-hero">
+  <div class="eyebrow"><span class="eyebrow-line"></span> YOUR SAVED CAMPUS INFO</div>
+  <h1>我的收藏</h1>
+  <p>把重要的校園資訊收在這裡，之後可以快速回來查看。</p>
+</section>
+<section class="explore-content favorites-content">
+  <div class="results-heading favorites-heading">
+    <div><div class="eyebrow"><span class="eyebrow-line"></span> SAVED FOR LATER</div><h2>收藏清單</h2><p>共收藏 {{ items|length }} 筆資訊</p></div>
+    <a class="clear-filter explore-link" href="{{ url_for('explore') }}">探索校園資訊 <span>→</span></a>
+  </div>
+  {% if items %}
+  <div class="item-grid results-grid">
+    {% for item in items %}
+      {% set loop_index = loop.index %}
+      {% include "_item_card.html" %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-results"><span class="empty-icon">♡</span><h3>你的收藏清單還是空的</h3><p>探索校園資訊，找到需要的內容後按下愛心收藏。</p><a class="clear-filter" href="{{ url_for('explore') }}">探索校園資訊 <span>→</span></a></div>
+  {% endif %}
+</section>
+{% endblock %}

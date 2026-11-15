@@ -1,0 +1,19 @@
+{% extends "public_base.html" %}
+{% block title %}確認刪除資訊{% endblock %}
+{% block content %}
+<section class="form-page confirm-page">
+  <a class="back-link" href="{{ url_for('my_items') }}">← 返回我的資訊</a>
+  <div class="form-card confirm-card">
+    <div class="confirm-icon">!</div>
+    <div class="eyebrow"><span class="eyebrow-line"></span> PLEASE CONFIRM</div>
+    <h1>確定要刪除這筆資訊嗎？</h1>
+    <p class="form-intro">刪除後無法復原，請確認這是你要移除的內容。</p>
+    <div class="delete-preview"><span>私人資訊・{{ item['summary'] }}</span><strong>{{ item['title'] }}</strong></div>
+    <form method="post" action="{{ url_for('delete_item', item_id=item['id']) }}" class="confirm-actions">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <a class="form-cancel" href="{{ url_for('my_items') }}">保留資訊</a>
+      <button class="confirm-delete-button" type="submit">確認刪除</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

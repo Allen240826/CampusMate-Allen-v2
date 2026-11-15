@@ -1,0 +1,9 @@
+{% extends "public_base.html" %}
+{% block title %}找不到頁面{% endblock %}
+{% block content %}
+<section class="empty-results not-found">
+  <span class="empty-icon">404</span><h1>找不到這筆校園資訊</h1>
+  <p>資訊可能已移除，或目前沒有權限查看。</p>
+  <a class="clear-filter" href="{{ url_for('explore') }}">回到探索資訊 <span>→</span></a>
+</section>
+{% endblock %}

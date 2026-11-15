@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7fbfa">
+  <meta name="description" content="CampusMate 校園生活資訊小幫手，讓校園資訊更好找、更好整理。">
+  <title>CampusMate｜校園生活資訊小幫手</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="prototype-note"><span class="note-dot"></span> CampusMate 校園資訊平台・卡片內容為示範資料</div>
+  {% include "_site_header.html" %}
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<div class="flash-stack" role="status">{% for category, message in messages %}<div class="flash-message flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% endwith %}
+    {% if logged_out %}<div class="flash-stack" role="status"><div class="flash-message flash-success">你已安全登出。</div></div>{% endif %}
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> YOUR CAMPUS, IN ONE PLACE</div>
+        <h1>校園生活大小事，<br><span>一站就找到。</span></h1>
+        <p class="hero-description">獎學金、活動、行政公告與生活服務，<br class="desktop-break">把分散的校園資訊，整理成你的日常好幫手。</p>
+        <form class="search-box" action="{{ url_for('explore') }}" method="get" role="search">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <label class="visually-hidden" for="q">搜尋校園資訊</label>
+          <input id="q" name="q" type="search" placeholder="搜尋獎學金、活動、公告⋯⋯">
+          <button type="submit">開始搜尋 <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="search-hint"><span class="sparkle">✳</span> 試試看：獎學金、選課、校園活動</div>
+      </div>
+      <div class="hero-art" aria-label="校園樹木與教學大樓插畫" role="img">
+        <div class="sun"></div>
+        <div class="cloud cloud-one"></div><div class="cloud cloud-two"></div>
+        <div class="hill hill-back"></div><div class="hill hill-front"></div>
+        <div class="building"><div class="roof"></div><div class="building-body">
+          <div class="building-sign">CAMPUS</div><div class="window-row"><i></i><i></i><i></i><i></i></div>
+          <div class="window-row"><i></i><i></i><i></i><i></i></div><div class="entry"><i></i></div>
+        </div></div>
+        <div class="tree tree-left"><i></i><i></i><i></i><b></b></div><div class="tree tree-right"><i></i><i></i><i></i><b></b></div>
+        <div class="floating-card"><span class="float-icon">✦</span><span><b>校園好生活</b><small>從這裡開始探索</small></span><span class="float-arrow">↗</span></div>
+        <span class="art-sparkle sparkle-a">✳</span><span class="art-sparkle sparkle-b">✦</span>
+      </div>
+      <div class="hero-bottom"><span>MADE FOR CAMPUS LIFE</span><span class="bottom-rule"></span><span>TAIWAN UNIVERSITY · BETA</span></div>
+    </section>
+
+    <section class="categories section-wrap" id="explore">
+      <div class="section-heading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> FIND YOUR WAY</div><h2>今天想找什麼？</h2></div>
+        <p>從日常需要出發，<br>快速找到相關校園資訊。</p>
+      </div>
+      <div class="category-grid">
+        {% for category in categories %}
+        <a class="category-card" href="{{ url_for('explore', category=category.slug) }}" aria-label="瀏覽{{ category.name }}資訊">
+          <span class="category-icon icon-{{ loop.index }}">{{ category.icon }}</span>
+          <span class="category-name">{{ category.name }}</span>
+          <span class="category-description">{{ category.description }}</span>
+          <span class="category-arrow" aria-hidden="true">↗</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="featured section-wrap" id="sample-items">
+      <div class="section-heading featured-heading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> CAMPUS INFORMATION</div><h2>校園資訊與服務入口</h2></div>
+        <span class="demo-label"><span></span> 示範資料與台大官方入口</span>
+      </div>
+      <div class="item-grid">
+        {% for item in items %}
+        {% set loop_index = loop.index %}
+        {% include "_item_card.html" %}
+        {% endfor %}
+      </div>
+      <div class="prototype-message"><span>✳</span><div><b>把校園資訊整理在一起</b><p>搜尋公開資訊、收藏重要內容，也能建立只有自己看得到的私人筆記。</p></div></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-inner"><a class="brand footer-brand" href="{{ url_for('home') }}"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span><span class="brand-name">Campus<span>Mate</span><small>校園生活資訊小幫手</small></span></a><span>讓校園資訊，離你更近一點。</span><span class="footer-copy">© CampusMate · 校園生活資訊</span></div></footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</body>
+</html>

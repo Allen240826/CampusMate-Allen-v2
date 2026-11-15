@@ -1,0 +1,38 @@
+<article class="item-card">
+  <a class="item-open-link" href="{{ url_for('item_detail', item_id=item['id'], next=request.full_path.rstrip('?')) }}">
+    <div class="item-illustration {{ {'scholarship':'mint','courses':'blue','events':'peach','announcements':'blue','life-services':'mint'}.get(item['category_slug'], 'mint') }}">
+      <span class="item-symbol">{{ {'scholarship':'✦','courses':'⌁','events':'◉','announcements':'▤','life-services':'⌂'}.get(item['category_slug'], '✦') }}</span>
+      <span class="item-watermark">{{ loop_index }}</span>
+      <span class="item-category">{{ item['category'] }}</span>
+    </div>
+    <div class="item-body">
+      <div class="item-meta">
+        <span class="source-kind {{ 'demo-kind' if item['is_demo'] else 'official-kind' if item['source_is_official'] else '' }}">{{ '示範資料' if item['is_demo'] else '台大官方來源' if item['source_is_official'] else '校園資訊' }}</span>
+        {% if item['date_status'] == 'past' %}
+        <span class="item-deadline is-past">重要日期已過 · {{ item['important_date_display'] }}</span>
+        {% elif item['important_date_display'] %}
+        <span class="item-deadline">重要日期 · {{ item['important_date_display'] }}</span>
+        {% else %}
+        <span class="item-deadline">未設定重要日期</span>
+        {% endif %}
+      </div>
+      <h3>{{ item['title'] }}</h3>
+      <p>{{ item['summary'] }}</p>
+      <div class="item-provenance">
+        <span class="item-source">來源 · {{ item['source_label'] }}</span>
+        {% if not item['is_demo'] %}
+        <span class="item-current-status {{ 'status-inactive' if item['is_current'] == 0 else 'status-unverified' if item['is_current'] is none else 'status-current' }}">{{ item['current_label'] }}</span>
+        {% if item['last_verified_at'] %}<span class="item-verified">最後確認 · {{ item['last_verified_at'] }}</span>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </a>
+  <div class="item-footer">
+    <span class="sample-chip">{{ '示範資訊' if item['is_demo'] else item['category'] }}</span>
+    <form class="favorite-form" method="post" action="{{ url_for('remove_favorite' if item['is_favorited'] else 'add_favorite', item_id=item['id']) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="next" value="{{ request.full_path.rstrip('?') }}">
+      <button class="favorite-button {{ 'is-favorited' if item['is_favorited'] }}" type="submit" aria-pressed="{{ 'true' if item['is_favorited'] else 'false' }}" aria-label="{{ '取消收藏' if item['is_favorited'] else '加入收藏' }} {{ item['title'] }}">{{ '♥' if item['is_favorited'] else '♡' }}</button>
+    </form>
+  </div>
+</article>

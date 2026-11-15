@@ -1,0 +1,13 @@
+{% extends "auth_base.html" %}
+{% block title %}個人中心{% endblock %}
+{% block content %}
+<section class="auth-card profile-card">
+  <div class="eyebrow"><span class="eyebrow-line"></span> YOUR CAMPUS SPACE</div>
+  <h1>嗨，{{ current_user['display_name'] }}</h1>
+  <p class="auth-intro">這是你的 CampusMate 個人中心。</p>
+  <div class="profile-details"><span>登入 Email</span><strong>{{ current_user['email'] }}</strong><span>加入時間</span><strong>{{ current_user['created_at'][:10] }}</strong></div>
+  <div class="profile-coming"><b>管理你的校園資訊</b><p><a href="{{ url_for('favorites') }}">前往我的收藏</a> · <a href="{{ url_for('my_items') }}">管理我的資訊</a></p></div>
+  <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="auth-submit" type="submit">登出 <span>→</span></button></form>
+  <p class="auth-switch"><a href="{{ url_for('home') }}">返回首頁</a></p>
+</section>
+{% endblock %}
